@@ -27,7 +27,6 @@ class Card:
 
     def update_card(self, row, col):
         self.state[row][col] = 1
-        print(self)
 
     def check_win(self):
         # Check row

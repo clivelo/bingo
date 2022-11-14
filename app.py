@@ -17,27 +17,21 @@ class BingoSquare(QObject):
         self.state = state
         self.win = False
 
-    def display(self) -> QStackedLayout:
-        stackedbox = QStackedLayout()
-
+    def display(self) -> (QLabel, QLabel):
         self.state_label = QLabel()
         if self.state == 1:
             self.state_label.setText("⬤")
         self.state_label.setStyleSheet("background-color:white; font-size:56pt; font-weight:700; color:red")
         self.state_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.state_label.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
-        stackedbox.addWidget(self.state_label)
 
         bingo_label = QLabel(str(self.val))
         bingo_label.setStyleSheet("background-color:rgba(255,255,255,0); font-size:36pt; font-weight:700; color:black")
         bingo_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         bingo_label.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
         bingo_label.mousePressEvent = self.set_state
-        stackedbox.addWidget(bingo_label)
 
-        stackedbox.setStackingMode(QStackedLayout.StackingMode.StackAll)
-
-        return stackedbox
+        return self.state_label, bingo_label
 
     def set_state(self, event):
         if self.state != 1 and not self.win:
@@ -89,7 +83,9 @@ class Window(QMainWindow):
 
         for i in range(5):
             for j in range(5):
-                self.gridbox.addLayout(self.squares[i][j].display(), i + 1, j)
+                widgets = self.squares[i][j].display()
+                self.gridbox.addWidget(widgets[0], i + 1, j)
+                self.gridbox.addWidget(widgets[1], i + 1, j)
 
     @pyqtSlot(tuple)
     def update_card(self, tup):
